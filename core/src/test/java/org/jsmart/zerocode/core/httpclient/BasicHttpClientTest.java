@@ -25,6 +25,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class BasicHttpClientTest {
     private BasicHttpClient basicHttpClient;
@@ -47,7 +49,8 @@ public class BasicHttpClientTest {
         RequestBuilder requestBuilder = basicHttpClient.createRequestBuilder("/api/v1/founder", "POST", header, reqBodyAsString);
         String nameValuePairString = EntityUtils.toString(requestBuilder.getEntity(), "UTF-8");
         assertThat(requestBuilder.getMethod(), is("POST"));
-        assertThat(nameValuePairString, is("Company=Amazon&worthInBillion=999.999&age=30"));
+        String sortedNameValuePairString = Arrays.stream(nameValuePairString.split("&")).sorted().collect(Collectors.joining("&"));
+        assertThat(sortedNameValuePairString, is("Company=Amazon&age=30&worthInBillion=999.999"));
     }
 
     @Test
